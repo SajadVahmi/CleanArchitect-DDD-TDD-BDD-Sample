@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\..\Application\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\..\Persistence\Persistence.Commands.SqlServer\Persistence.Commands.SqlServer.csproj" />
+    <ProjectReference Include="..\..\Persistence\Persistence.Queries.SqlServer\Persistence.Queries.SqlServer.csproj" />
+    
+  </ItemGroup>
+
+</Project>
