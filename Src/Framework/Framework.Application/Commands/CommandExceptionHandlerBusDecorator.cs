@@ -17,59 +17,59 @@ namespace Framework.Application.Commands
 
         }
 
-        public override Task<CommandResult> Send<TCommand>(TCommand command)
+        public override async Task<CommandResult> Send<TCommand>(TCommand command)
         {
             try
             {
-                return commandBus.Send(command);
+                return await commandBus.Send(command);
             }
             catch (AppException ex)
             {
 
-                return DomainExceptionHandling<TCommand, CommandResult>(ex);
+                return await DomainExceptionHandling<TCommand, CommandResult>(ex);
             }
             catch (Exception ex)
             {
-                return ExceptionHandling<TCommand, CommandResult>(ex);
+                return await ExceptionHandling <TCommand, CommandResult>(ex);
             }
 
 
         }
 
-        public override Task<CommandResult<TData>> Send<TCommand, TData>(TCommand command)
+        public override async Task<CommandResult<TData>> Send<TCommand, TData>(TCommand command)
         {
             try
             {
-                return commandBus.Send<TCommand, TData>(command);
+                return await commandBus .Send<TCommand, TData>(command);
             }
             catch (AppException ex)
             {
-                return DomainExceptionHandling<TCommand, CommandResult<TData>>(ex);
+                return await DomainExceptionHandling<TCommand, CommandResult<TData>>(ex);
             }
             catch (Exception ex)
             {
-                return ExceptionHandling<TCommand, CommandResult<TData>>(ex);
+                return await ExceptionHandling<TCommand, CommandResult<TData>>(ex);
             }
 
         }
 
         private Task<TCommandResult> DomainExceptionHandling<TCommand, TCommandResult>(AppException ex) where TCommandResult : Result, new()
         {
-            var type = typeof(TCommandResult);
-            dynamic commandResult = new CommandResult();
-            if (type.IsGenericType)
-            {
-                var d1 = typeof(CommandResult<>);
-                var makeme = d1.MakeGenericType(type.GetGenericArguments());
-                commandResult = Activator.CreateInstance(makeme);
-            }
-            else
-                commandResult.AddError(ex.Message);
+             var commandResult = CreateCommandResult<TCommandResult>(ex);
 
             commandResult.Status = ResultStatus.DomainException;
             return Task.FromResult(commandResult as TCommandResult);
         }
         private Task<TCommandResult> ExceptionHandling<TCommand, TCommandResult>(Exception ex) where TCommandResult : Result, new()
+        {
+
+            var commandResult = CreateCommandResult<TCommandResult>(ex);
+
+            commandResult.Status = ResultStatus.Exception;
+            return Task.FromResult(commandResult as TCommandResult);
+        }
+
+        private CommandResult CreateCommandResult<TCommandResult>(Exception ex)
         {
             var type = typeof(TCommandResult);
             dynamic commandResult = new CommandResult();
@@ -78,12 +78,12 @@ namespace Framework.Application.Commands
                 var d1 = typeof(CommandResult<>);
                 var makeme = d1.MakeGenericType(type.GetGenericArguments());
                 commandResult = Activator.CreateInstance(makeme);
+                commandResult.AddError(ex.Message);
             }
             else
                 commandResult.AddError(ex.Message);
 
-            commandResult.Status = ResultStatus.Exception;
-            return Task.FromResult(commandResult as TCommandResult);
+            return commandResult;
         }
     }
 }

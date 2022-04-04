@@ -38,7 +38,7 @@ namespace Test.RestApi.Integration
         {
             builder.ConfigureServices(services =>
             {
-                services.AddCors();
+                
                 var descriptor = services.SingleOrDefault(
                     d => d.ServiceType ==
                         typeof(DbContextOptions<AppCommandDbContext>));
@@ -61,9 +61,12 @@ namespace Test.RestApi.Integration
 
                     db.Database.EnsureCreated();
 
+
+
                     try
                     {
                         db.Customers.RemoveRange(db.Customers);
+                        db.SaveChanges();
                     }
                     catch (Exception ex)
                     {

@@ -30,8 +30,8 @@ namespace Presentation.Configuration
                .WithScopedLifetime());
 
             services.AddTransient<ICommandBus, CommandBus>();
-            services.Decorate<ICommandBus, CommandBusDomainExceptionHandlerDecorator>();
             services.Decorate<ICommandBus, CommandBusValidationDecorator>();
+            services.Decorate<ICommandBus, CommandBusDomainExceptionHandlerDecorator>();
 
             services.AddDbContext<AppCommandDbContext>(builder =>
                     builder.UseSqlServer(appsettings.CommandsConnectionString));
@@ -41,12 +41,12 @@ namespace Presentation.Configuration
             services.Scan(s => s.FromAssemblies(typeof(CustomerCommandRepository).Assembly)
                .AddClasses(c => c.AssignableToAny(typeof(ICustomerCommandRepository)))
                .AsImplementedInterfaces()
-               .WithTransientLifetime());
+               .WithScopedLifetime());
 
-            services.Scan(s => s.FromAssemblies(typeof(ICustomerQueryRepository).Assembly)
-               .AddClasses(c => c.AssignableToAny(typeof(CustomerQueryRepository)))
+            services.Scan(s => s.FromAssemblies(typeof(CustomerQueryRepository).Assembly)
+               .AddClasses(c => c.AssignableToAny(typeof(ICustomerQueryRepository)))
                .AsImplementedInterfaces()
-               .WithTransientLifetime());
+               .WithScopedLifetime());
 
             services.AddScoped<ICustomerDomainService, CustomerDomainService>();
 

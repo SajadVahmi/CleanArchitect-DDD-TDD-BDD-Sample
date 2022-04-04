@@ -20,7 +20,7 @@ namespace Domain.Models.Customers
         {
             Id = CustomerId.FromGuid(id);
             Name = FullName.Create(firstname, lastname);
-           
+            Email = email;
            
             RegisterDate = clock.Now();
 

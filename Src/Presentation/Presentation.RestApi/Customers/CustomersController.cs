@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Customers;
 using Framework.Application.RestApi;
 using Framework.Domain.Commands;
+using Framework.Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,10 @@ namespace Presentation.RestApi.Customers
 
             var result = await bus.Send<RegisterCustomerCommand, RegisteredCustomerModel>(command);
 
-            //TODO: Add Return From CommndResult To Base Api Controller 
-            return Created(string.Empty, result.Data);
+            if (result.Status == ResultStatus.Ok)
+                return Created(string.Empty, result.Data);
+            else
+                return BadRequest();
         }
     }
 }

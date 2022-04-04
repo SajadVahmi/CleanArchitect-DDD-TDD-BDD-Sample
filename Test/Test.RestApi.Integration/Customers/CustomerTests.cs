@@ -1,4 +1,5 @@
-﻿using ServiceHost;
+﻿using FluentAssertions;
+using ServiceHost;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +22,31 @@ namespace Test.RestApi.Integration.Customers
         }
 
         [Fact]
-        public async Task Post_WithValidCustomer_ReturnsCreatedResult()
+        public void post_with_valid_customer_return_created()
         {
             var postRequest = new HttpRequestMessage(HttpMethod.Post, CustomerRouts.REGISTER_CUSTOMER);
             postRequest.Content = new CustomerInputJsonBuilder().Build();
+ 
+            var response =  Client.SendAsync(postRequest).Result;
 
-            // Act
-            var response = await Client.SendAsync(postRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            
+        }
 
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        [Theory]
+        [MemberData(nameof(GetInvalidCustomerInformation))]
+        public void post_with_invalid_costomer_information_return_bad_request(string firstName,string lastName,string email)
+        {
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, CustomerRouts.REGISTER_CUSTOMER);
+            postRequest.Content = new CustomerInputJsonBuilder()
+                                      .WithFirstname(firstName)
+                                      .WithLastname(lastName)
+                                      .WithEmail(email)
+                                      .Build();
 
+            var response =  Client.SendAsync(postRequest).Result;
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }

@@ -40,9 +40,9 @@ namespace Test.Domain.Unit.Customers
 
         [Theory]
         [MemberData(nameof(GetInvlidCustomerInformaion))]
-        public void not_allow_create_customer_with_invalid_information(Guid id,string firstname,string lastname,string email,string message)
+        public async Task not_allow_create_customer_with_invalid_information(Guid id,string firstname,string lastname,string email,string message)
         {
-            Action act= async () => await Customer.Create(id:id,
+            Func<Task> act= async () => await Customer.Create(id:id,
                                              firstname:firstname,
                                              lastname: lastname,
                                              email:email,
@@ -50,22 +50,22 @@ namespace Test.Domain.Unit.Customers
                                              customerDomainService:CustomerDomainService)
                              ;
 
-            act.Should().Throw<AppException>().WithMessage(message);
+            await act.Should().ThrowAsync<AppException>().WithMessage(message);
         }
 
        [Fact]
-       public void customer_cannot_create_with_an_existing_email()
+       public async Task customer_cannot_create_with_an_existing_email()
         {
             CustomerDomainService.ExistWithEmailAsync(Arg.Any<Email>()).Returns(true);
 
-            Action act = async () => await Customer.Create(id: CustomerTestData.Id,
+            Func<Task> act = async () => await Customer.Create(id: CustomerTestData.Id,
                                           firstname: CustomerTestData.Firstname,
                                           lastname: CustomerTestData.Lastname,
                                           email: CustomerTestData.Email,
                                           clock: Clock,
                                           customerDomainService: CustomerDomainService);
 
-            act.Should().Throw<CustomerExistWithCurrentEmailException>();
+             await act.Should().ThrowAsync<CustomerExistWithCurrentEmailException>();
         }
 
 
