@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Test.RestApi.Integration.Customers
 {
-    public class BaseCustomerTests : IClassFixture<CustomWebApplicationFactory<ServiceHost.Startup>>
+    public class BaseCustomersTests : IClassFixture<CustomWebApplicationFactory<ServiceHost.Startup>>
     {
         protected readonly HttpClient Client;
         protected readonly CustomWebApplicationFactory<ServiceHost.Startup>
             Factory;
 
-        public BaseCustomerTests(
+        public BaseCustomersTests(
             CustomWebApplicationFactory<ServiceHost.Startup> factory)
         {
             this.Client = factory.CreateClient();
