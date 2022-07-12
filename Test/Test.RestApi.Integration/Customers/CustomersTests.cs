@@ -30,7 +30,6 @@ namespace Test.RestApi.Integration.Customers
  
             var response =await Client.SendAsync(postRequest);
             
-
             response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             
@@ -52,14 +51,16 @@ namespace Test.RestApi.Integration.Customers
                 .Build();
 
             var response =await Client.SendAsync(postRequest);
-            var cretedModel =await  response.Content.ReadFromJsonAsync<CustomerCreatedModel>();
+            var createdModel =await  response.Content.ReadFromJsonAsync<CustomerCreatedModel>();
 
-            cretedModel.Should().BeEquivalentTo(expectedModel, options => options.Excluding(ex =>
-                                                                          (ex.Id)));
-            
+            createdModel.Should().BeEquivalentTo(expectedModel, options => options.Excluding(ex =>(ex.Id))
+                                                                                 .Excluding(ex=>ex.RegisterDate));
+            createdModel.Id.Should().NotBe(default(Guid));
+            createdModel.RegisterDate.Should().NotBe(default(DateTime));
+
+
+
         }
-
-
 
         [Theory]
         [MemberData(nameof(GetInvalidCustomerInformation))]

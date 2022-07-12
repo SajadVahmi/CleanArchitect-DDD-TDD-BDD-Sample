@@ -47,6 +47,7 @@ namespace Application.Commands.Customers.RegisterCustomerCommand
                 Firstname = customerForCreation.Name.Firstname,
                 Lastname = customerForCreation.Name.Lastname,
                 Email = customerForCreation.Email.Value,
+                RegisterDate=customerForCreation.RegisterDate
             };
 
             return Ok(createdCustomer);

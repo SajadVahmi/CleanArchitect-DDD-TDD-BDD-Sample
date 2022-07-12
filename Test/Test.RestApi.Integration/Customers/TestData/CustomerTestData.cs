@@ -12,6 +12,7 @@ namespace Test.RestApi.Integration.Customers.TestData
         public static string Firstname => "TestFirstname";
         public static string Lastname => "TestLastname";
         public static string Email => "test@email.com";
+        public static DateTime RegisterDate => DateTime.UtcNow;
 
     }
 }

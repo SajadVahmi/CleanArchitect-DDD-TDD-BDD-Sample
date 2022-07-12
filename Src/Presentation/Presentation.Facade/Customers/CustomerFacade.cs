@@ -24,9 +24,9 @@ namespace Presentation.Facade.Customers
         {
             var command = dto.MapToCommand();
             
-            var registeredCustomer=await commandBus.SendAsync<RegisterCustomerCommand, RegisteredCustomerDto>(command);
+            var registerCustomerResult=await commandBus.SendAsync<RegisterCustomerCommand, RegisteredCustomerDto>(command);
 
-            return registeredCustomer;
+            return registerCustomerResult;
 
 
         }

@@ -14,6 +14,7 @@ namespace Test.RestApi.Integration.Customers.Builders
         private string firstname;
         private string lastname;
         private string email;
+        private DateTime registerDate;
 
         public CustumerCreatedModelBuilder()
         {
@@ -21,6 +22,7 @@ namespace Test.RestApi.Integration.Customers.Builders
             firstname = CustomerTestData.Firstname;
             lastname = CustomerTestData.Lastname;
             email = CustomerTestData.Email;
+            registerDate = CustomerTestData.RegisterDate;
 
         }
 
@@ -46,6 +48,12 @@ namespace Test.RestApi.Integration.Customers.Builders
             return this;
         }
 
+        public CustumerCreatedModelBuilder WithCreateDateTime(DateTime registerDate)
+        {
+            this.registerDate = registerDate;
+            return this;
+        }
+
         public CustomerCreatedModel Build()
         {
             return new CustomerCreatedModel()
@@ -53,7 +61,8 @@ namespace Test.RestApi.Integration.Customers.Builders
                 Id = id,
                 Firstname = firstname,
                 Lastname = lastname,
-                Email = email
+                Email = email,
+                RegisterDate = registerDate
             };
         }
     }
