@@ -39,10 +39,11 @@ namespace Test.RestApi.Integration
         {
             builder.ConfigureServices(services =>
             {
-                
+                serviceProvider = services.BuildServiceProvider();
+
                 var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                        typeof(DbContextOptions<AppCommandDbContext>));
+                 d => d.ServiceType ==
+                     typeof(DbContextOptions<AppCommandDbContext>));
 
                 services.Remove(descriptor);
 
@@ -51,22 +52,22 @@ namespace Test.RestApi.Integration
                     options.UseSqlServer(DbTestConnections.COMMAND_DBCONTEXT);
                 });
 
-                serviceProvider = services.BuildServiceProvider();
 
                 using (var scope = serviceProvider.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<AppCommandDbContext>();
-                    var logger = scopedServices
-                        .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
                     db.Customers.RemoveRange(db.Customers);
                     db.SaveChanges();
 
                 }
+
             });
         }
+
+       
 
         public override ValueTask DisposeAsync()
         {
