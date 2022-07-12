@@ -17,8 +17,9 @@ using Test.RestApi.Integration.Common.DbConnections;
 namespace Test.RestApi.Integration
 {
     public class CustomWebApplicationFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup : class
+    : WebApplicationFactory<TStartup>, IDisposable where TStartup : class
     {
+        private ServiceProvider serviceProvider;
         protected override IHostBuilder CreateHostBuilder()
         {
 
@@ -50,9 +51,9 @@ namespace Test.RestApi.Integration
                     options.UseSqlServer(DbTestConnections.COMMAND_DBCONTEXT);
                 });
 
-                var sp = services.BuildServiceProvider();
+                serviceProvider = services.BuildServiceProvider();
 
-                using (var scope = sp.CreateScope())
+                using (var scope = serviceProvider.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<AppCommandDbContext>();
@@ -60,21 +61,24 @@ namespace Test.RestApi.Integration
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
+                    db.Customers.RemoveRange(db.Customers);
+                    db.SaveChanges();
 
-
-
-                    try
-                    {
-                        db.Customers.RemoveRange(db.Customers);
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "An error occurred seeding the " +
-                            "database with test messages. Error: {Message}", ex.Message);
-                    }
                 }
             });
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var scopedServices = scope.ServiceProvider;
+                var db = scopedServices.GetRequiredService<AppCommandDbContext>();
+
+                db.Database.EnsureDeleted();
+            }
+
+            return base.DisposeAsync();
         }
     }
 }
