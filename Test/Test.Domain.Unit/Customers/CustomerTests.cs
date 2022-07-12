@@ -1,4 +1,4 @@
-﻿using Domain.Models.Contracts.DomainServices;
+﻿using Domain.Contracts.Customers.Exceptions;
 using Domain.Models.Customers;
 using FluentAssertions;
 using Framework.Domain.Exceptions;
@@ -40,23 +40,23 @@ namespace Test.Domain.Unit.Customers
 
         [Theory]
         [MemberData(nameof(GetInvlidCustomerInformaion))]
-        public async Task not_allow_create_customer_with_invalid_information(Guid id,string firstname,string lastname,string email,string message)
+        public  void not_allow_create_customer_with_invalid_information(Guid id,string firstname,string lastname,string email,Action<Func<Customer>> assert)
         {
-            Func<Task> act= async () => await Customer.Create(id:id,
+           var act=() =>  Customer.Create(id:id,
                                              firstname:firstname,
                                              lastname: lastname,
                                              email:email,
                                              clock:Clock,
-                                             customerDomainService:CustomerDomainService)
-                             ;
+                                             customerDomainService:CustomerDomainService).Result;
 
-            await act.Should().ThrowAsync<AppException>().WithMessage(message);
+             assert.Invoke(act);
+            
         }
 
        [Fact]
        public async Task customer_cannot_create_with_an_existing_email()
         {
-            CustomerDomainService.ExistWithEmailAsync(Arg.Any<Email>()).Returns(true);
+            CustomerDomainService.ExistWithEmailAsync(Arg.Any<CustomerEmail>()).Returns(true);
 
             Func<Task> act = async () => await Customer.Create(id: CustomerTestData.Id,
                                           firstname: CustomerTestData.Firstname,
@@ -65,7 +65,7 @@ namespace Test.Domain.Unit.Customers
                                           clock: Clock,
                                           customerDomainService: CustomerDomainService);
 
-             await act.Should().ThrowAsync<CustomerExistWithCurrentEmailException>();
+             await act.Should().ThrowAsync<CustomerExistWithThisEmailException>();
         }
 
 

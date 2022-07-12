@@ -1,6 +1,7 @@
-﻿using Domain.Models.Customers;
+﻿
 using Framework.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Queries.SqlServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Persistence.Queries.SqlServer.DbContexts
 
 
 
-        public DbSet<CustomerReadModel> Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

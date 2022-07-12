@@ -9,11 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Presentation.Configuration;
+using Presentation.RestApi.Customers.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
+using Presentation.Configuration;
 
 namespace ServiceHost
 {
@@ -33,6 +36,7 @@ namespace ServiceHost
         {
             //services.AddCors();
             services.AddControllers();
+             
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServiceHost", Version = "v1" });
@@ -48,6 +52,9 @@ namespace ServiceHost
 
 
             services.ConfigureApp(appSettings);
+
+            services.AddAutoMapper(
+               Assembly.GetAssembly(typeof(CustomerMapper)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,22 +1,17 @@
 ﻿using Application.Commands.Customers;
-using Domain.Models.Contracts.DomainServices;
+using Application.Commands.Customers.RegisterCustomerCommand;
 using Domain.Models.Customers;
 using Framework.Application.Commands;
 using Framework.Application.Services;
 using Framework.Domain.Clock;
-using Framework.Domain.Commands;
 using Framework.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Commands.SqlServer.DbContexts;
 using Persistence.Commands.SqlServer.Repositories;
 using Persistence.Queries.SqlServer.DbContexts;
-using Persistence.Queries.SqlServer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Presentation.Facade.Customers;
+using ICustomerRepository = Domain.Models.Customers.ICustomerRepository;
 
 namespace Presentation.Configuration
 {
@@ -38,15 +33,17 @@ namespace Presentation.Configuration
             services.AddDbContext<AppQueryDbContext>(builder =>
                     builder.UseSqlServer(appsettings.QueriesConnectionString));
 
-            services.Scan(s => s.FromAssemblies(typeof(CustomerCommandRepository).Assembly)
-               .AddClasses(c => c.AssignableToAny(typeof(ICustomerCommandRepository)))
+            services.Scan(s => s.FromAssemblies(typeof(CustomerRepository).Assembly)
+               .AddClasses(c => c.AssignableToAny(typeof(ICustomerRepository)))
                .AsImplementedInterfaces()
                .WithScopedLifetime());
 
-            services.Scan(s => s.FromAssemblies(typeof(CustomerQueryRepository).Assembly)
-               .AddClasses(c => c.AssignableToAny(typeof(ICustomerQueryRepository)))
-               .AsImplementedInterfaces()
-               .WithScopedLifetime());
+            services.Scan(s => s.FromAssemblies(typeof(CustomerFacade).Assembly)
+              .AddClasses(c => c.AssignableToAny(typeof(ICustomerFacade)))
+              .AsImplementedInterfaces()
+              .WithScopedLifetime());
+
+
 
             services.AddScoped<ICustomerDomainService, CustomerDomainService>();
 

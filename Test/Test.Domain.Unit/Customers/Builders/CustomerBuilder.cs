@@ -1,5 +1,4 @@
-﻿using Domain.Models.Contracts.DomainServices;
-using Domain.Models.Customers;
+﻿using Domain.Models.Customers;
 using Framework.Domain.Clock;
 using Framework.Domain.ValueObjects;
 using Framework.TestTools;
@@ -29,7 +28,7 @@ namespace Test.Domain.Unit.Customers.Builders
             email = CustomerTestData.Email;
             clock = new ClockStub();
             customerDomainService = Substitute.For<ICustomerDomainService>();
-            customerDomainService.ExistWithEmailAsync(Arg.Any<Email>())
+            customerDomainService.ExistWithEmailAsync(Arg.Any<CustomerEmail>())
                                  .Returns(false);
         }
 

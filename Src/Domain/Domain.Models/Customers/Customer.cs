@@ -1,5 +1,4 @@
-﻿using Domain.Models.Contracts.DomainServices;
-using Framework.Domain.Clock;
+﻿using Framework.Domain.Clock;
 using Framework.Domain.Entities;
 using Framework.Domain.ValueObjects;
 using System;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Contracts.Customers.Exceptions;
 
 namespace Domain.Models.Customers
 {
@@ -16,10 +16,12 @@ namespace Domain.Models.Customers
         {
 
         }
-        protected Customer(Guid id, string firstname, string lastname, Email email, IClock clock)
+        protected Customer(Guid id, string firstname, string lastname, CustomerEmail email, IClock clock)
         {
             Id = CustomerId.FromGuid(id);
-            Name = FullName.Create(firstname, lastname);
+
+            Name = CustomerFullName.Create(firstname, lastname);
+
             Email = email;
            
             RegisterDate = clock.Now();
@@ -29,15 +31,18 @@ namespace Domain.Models.Customers
 
         public static async Task<Customer> Create(Guid id, string firstname, string lastname, string email, IClock clock,ICustomerDomainService customerDomainService)
         {
-            Email emailObject= Email.Create(email);
+            CustomerEmail emailObject= CustomerEmail.Create(email);
+
             bool customerExistWithEmail = customerDomainService.ExistWithEmailAsync(emailObject).Result;
+
             if (customerExistWithEmail)
-                throw new CustomerExistWithCurrentEmailException();
+                throw new CustomerExistWithThisEmailException();
+
             return new Customer(id, firstname, lastname, emailObject, clock);
         }
 
-        public FullName Name { get; protected set; }
-        public Email Email { get; protected set; }
+        public CustomerFullName Name { get; protected set; }
+        public CustomerEmail Email { get; protected set; }
         public DateTime RegisterDate { get; protected set; }
         
     }
