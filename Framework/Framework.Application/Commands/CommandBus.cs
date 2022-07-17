@@ -20,14 +20,14 @@ namespace Framework.Application.Commands
         public Task<Result> SendAsync<TCommand>(TCommand command) where TCommand : class, ICommand
         {
             var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
-            return handler.Handle(command);
+            return handler.HandleAsync(command);
 
         }
 
         public Task<Result<TData>> SendAsync<TCommand, TData>(TCommand command) where TCommand : class, ICommand<TData>
         {
             var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand, TData>>();
-            return handler.Handle(command);
+            return handler.HandleAsync(command);
         }
 
     }

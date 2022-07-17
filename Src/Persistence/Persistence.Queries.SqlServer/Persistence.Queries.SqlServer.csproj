@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Framework\Framework.Persistence\Framework.Persistence.csproj" />
+    <ProjectReference Include="..\..\Application\Application.Contracts\Application.Contracts.csproj" />
+    <ProjectReference Include="..\..\Domain\Domain.Contracts\Domain.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

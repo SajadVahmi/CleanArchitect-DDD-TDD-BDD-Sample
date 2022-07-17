@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Commands.Customers.RegisterCustomerCommand
+namespace Application.Contracts.Customers.Commands
 {
     public class RegisterCustomerCommand : ICommand<RegisteredCustomerDto>
     {

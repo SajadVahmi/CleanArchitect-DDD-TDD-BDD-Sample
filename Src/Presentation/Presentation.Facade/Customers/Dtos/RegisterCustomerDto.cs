@@ -1,4 +1,4 @@
-﻿using Application.Commands.Customers.RegisterCustomerCommand;
+﻿using Application.Contracts.Customers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;

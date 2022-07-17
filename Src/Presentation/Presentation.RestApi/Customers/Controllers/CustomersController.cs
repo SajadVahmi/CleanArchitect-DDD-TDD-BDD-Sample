@@ -1,7 +1,6 @@
-﻿using Application.Commands.Customers;
-using Application.Commands.Customers.RegisterCustomerCommand;
+﻿
 using AutoMapper;
-using Domain.Contracts.Customers.Dtos;
+
 using Framework.Application.Commands;
 using Framework.Application.Common;
 using Framework.Application.RestApi;
@@ -33,6 +32,8 @@ namespace Presentation.RestApi.Customers.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync([FromBody]RegisterCustomerRequest request,CancellationToken cancellationToken=default)
         {
+            
+
             RegisterCustomerDto registerCustomerDto = mapper.Map<RegisterCustomerDto>(request);
 
             var result = await customerFacade.RegisterCustomerAsync(registerCustomerDto);

@@ -1,7 +1,8 @@
-﻿using Application.Commands.Customers;
-using Application.Commands.Customers.RegisterCustomerCommand;
+﻿using Application.Contracts.Customers.Commands;
+using Application.Customers;
 using Domain.Models.Customers;
 using Framework.Application.Commands;
+using Framework.Application.Queries;
 using Framework.Application.Services;
 using Framework.Domain.Clock;
 using Framework.Domain.Services;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence.Commands.SqlServer.DbContexts;
 using Persistence.Commands.SqlServer.Repositories;
 using Persistence.Queries.SqlServer.DbContexts;
+using Persistence.Queries.SqlServer.QueryHandlers;
 using Presentation.Facade.Customers;
 using ICustomerRepository = Domain.Models.Customers.ICustomerRepository;
 
@@ -19,7 +21,7 @@ namespace Presentation.Configuration
     {
         public static void ConfigureApp(this IServiceCollection services, AppSettings appsettings)
         {
-            services.Scan(s => s.FromAssemblies(typeof(RegisterCustomerCommand).Assembly)
+            services.Scan(s => s.FromAssemblies(typeof(RegisterCustomerCommandHandler).Assembly)
                .AddClasses(c => c.AssignableToAny(typeof(ICommandHandler<>), typeof(ICommandHandler<,>)))
                .AsImplementedInterfaces()
                .WithScopedLifetime());
@@ -27,6 +29,11 @@ namespace Presentation.Configuration
             services.AddTransient<ICommandBus, CommandBus>();
             services.Decorate<ICommandBus, CommandBusValidationDecorator>();
             services.Decorate<ICommandBus, CommandBusDomainExceptionHandlerDecorator>();
+
+            services.Scan(s => s.FromAssemblies(typeof(CustomerQueryHandler).Assembly)
+              .AddClasses(c => c.AssignableToAny(typeof(IQueryHandler<,>)))
+              .AsImplementedInterfaces()
+              .WithScopedLifetime());
 
             services.AddDbContext<AppCommandDbContext>(builder =>
                     builder.UseSqlServer(appsettings.CommandsConnectionString));

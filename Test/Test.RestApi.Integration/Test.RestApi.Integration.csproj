@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Framework.TestTools\Framework.TestTools.csproj" />
+    <ProjectReference Include="..\..\Src\Domain\Domain.Models\Domain.Models.csproj" />
     <ProjectReference Include="..\..\Src\ServiceHost\ServiceHost.csproj" />
   </ItemGroup>
 

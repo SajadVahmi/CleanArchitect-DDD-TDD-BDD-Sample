@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Framework.Application.Commands
@@ -12,7 +13,7 @@ namespace Framework.Application.Commands
     {
         protected readonly Result<TData> result = new Result<TData>();
 
-        public abstract Task<Result<TData>> Handle(TCommand command);
+        public abstract Task<Result<TData>> HandleAsync(TCommand command,CancellationToken cancellationToken=default);
         protected virtual Task<Result<TData>> OkAsync(TData data)
         {
             result.data = data;
@@ -59,7 +60,7 @@ namespace Framework.Application.Commands
     {
 
         protected readonly Result result = new();
-        public abstract Task<Result> Handle(TCommand command);
+        public abstract Task<Result> HandleAsync(TCommand command, CancellationToken cancellationToken = default);
 
         protected virtual Task<Result> OkAsync()
         {

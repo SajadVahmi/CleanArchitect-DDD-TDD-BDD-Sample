@@ -1,4 +1,4 @@
-﻿using Application.Commands.Customers.RegisterCustomerCommand;
+﻿using Application.Contracts.Customers.Commands;
 using Domain.Contracts.Customers.Dtos;
 using Framework.Application.Commands;
 using Framework.Application.Common;
